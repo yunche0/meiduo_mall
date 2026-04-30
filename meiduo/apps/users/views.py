@@ -50,5 +50,8 @@ class RegisterView(View):
             return JsonResponse({'code': 400, 'errmsg': '用户名已存在'})
         #User.objects.create(username=username,password=password,mobile=mobile)
         user=User.objects.create_user(username=username,password=password,mobile=mobile)
+
+        from django.contrib.auth import login
+        login(request,user)
         return JsonResponse({'code':0,'errmsg':'ok'})
 
