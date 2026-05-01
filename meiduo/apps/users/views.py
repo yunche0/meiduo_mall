@@ -55,3 +55,38 @@ class RegisterView(View):
         login(request,user)
         return JsonResponse({'code':0,'errmsg':'ok'})
 
+class LoginView(View):
+
+    def post(self,request):
+        data=json.loads(request.body.decode())
+        username=data.get('username')
+        password=data.get('password')
+        remember=data.get('remember')
+
+        if not all([username,password]):
+            return JsonResponse({'code':400,'errmsg':'参数不全'})
+
+        if re.match('1[3-9]\d{9}',username):
+            User.USERNAME_FIELD='mobile'
+        else:
+            User.USERNAME_FIELD='username'
+        from django.contrib.auth import authenticate
+
+        user=authenticate(username=username,password=password)
+        if user is None:
+            return JsonResponse({'code':400,'errmsg':'账号或密码错误'})
+
+        from django.contrib.auth import login
+        login(request,user)
+
+        if remember:
+            request.session.set_expiry(None)
+
+        else:
+            request.session.set_expiry(0)
+
+        response=JsonResponse({'code':0,'errmsg':'ok'})
+
+        response.set_cookie('username',username)
+
+        return response

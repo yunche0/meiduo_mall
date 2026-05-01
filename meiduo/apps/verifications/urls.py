@@ -6,4 +6,6 @@ from utils.converters import MobileConverter
 urlpatterns = [
     path('image_codes/<uuid>/',ImageCodeView.as_view()),
     path('sms_codes/<mobile:mobile>/',SmsCodeView.as_view()),
+
+
 ]
