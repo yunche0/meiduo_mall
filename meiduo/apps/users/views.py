@@ -1,3 +1,5 @@
+from http.client import responses
+
 from django.shortcuts import render
 from django.views import View
 from apps.users.models import User
@@ -90,3 +92,22 @@ class LoginView(View):
         response.set_cookie('username',username)
 
         return response
+
+from django.contrib.auth import logout
+
+class LogoutView(View):
+
+    def delete(self,request):
+        logout(request)
+        response= JsonResponse({'code':0,'errmsg':'ok'})
+        response.delete_cookie('username')
+        return response
+
+
+
+from utils.views import LoginRequiredJSONMixin
+class CenterView(LoginRequiredJSONMixin,View):
+
+    def get(self,request):
+
+        return JsonResponse({'code':0,'errmsg':'ok'})
